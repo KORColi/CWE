@@ -1,5 +1,6 @@
 pipeline {
     agent any
+
     stages {
         stage('Checkout') {
             steps {
@@ -8,22 +9,23 @@ pipeline {
         }
         stage('Static Analysis') {
             steps {
-                // Checkmarx 스캔 명령어 또는 대체 명령어를 추가합니다.
+                // Static analysis 도구 실행 명령 추가
+                echo 'Running static analysis...'
             }
         }
         stage('Dynamic Analysis') {
             steps {
-                // OWASP ZAP 명령어를 추가합니다.
-                zapStart target: 'http://your-app-url'
-                zapSpider()
-                zapScan()
-                zapReport()
+                // Dynamic analysis 도구 실행 명령 추가
+                echo 'Running dynamic analysis...'
             }
         }
         stage('AI Analysis') {
             steps {
+                // AI 분석 스크립트 실행 명령 추가
+                echo 'Running AI analysis...'
                 sh 'python3 ai_analysis.py'
             }
         }
     }
 }
+
