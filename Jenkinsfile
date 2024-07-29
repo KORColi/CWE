@@ -2,11 +2,6 @@ pipeline {
     agent any
 
     stages {
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/KORColi/CWE.git'
-            }
-        }
         stage('Static Analysis') {
             steps {
                 // Static analysis 도구 실행 명령 추가
