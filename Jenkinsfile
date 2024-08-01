@@ -5,7 +5,7 @@ pipeline {
             steps {
                 sh '''
                 python3 -m venv venv
-                source venv/bin/activate
+                . venv/bin/activate
                 pip install gdown
                 '''
             }
@@ -13,7 +13,7 @@ pipeline {
         stage('Download NVD Data') {
             steps {
                 sh '''
-                source venv/bin/activate
+                . venv/bin/activate
                 gdown --id 1EIx6HWnFvu1ImymrMDVwums573NHJL9_ -O nvdcve-1.1-2017.json.gz
                 gdown --id 1C6GUd7IMrsKfF3Fj4NOkoOJ9Ipclf3L5 -O nvdcve-1.1-2018.json.gz
                 gdown --id 1QWDoX4Yup89SthBCRGUEPCBL2G38viVK -O nvdcve-1.1-2019.json.gz
@@ -41,7 +41,7 @@ pipeline {
             steps {
                 echo 'Running AI analysis...'
                 sh '''
-                source venv/bin/activate
+                . venv/bin/activate
                 python3 ai_analysis.py
                 '''
             }
