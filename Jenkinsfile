@@ -6,7 +6,7 @@ pipeline {
                 sh '''
                 python3 -m venv venv
                 . venv/bin/activate
-                pip install gdown pylint pytest
+                pip install gdown scikit-learn
                 '''
             }
         }
@@ -47,7 +47,7 @@ pipeline {
             steps {
                 sh '''
                 . venv/bin/activate
-                python3 ai_analysis.py > ai_analysis_results.txt
+                python3 ai_analysis.py
                 '''
                 archiveArtifacts artifacts: 'ai_analysis_results.txt'
             }
