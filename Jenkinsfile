@@ -6,7 +6,7 @@ pipeline {
                 sh '''
                 python3 -m venv venv
                 . venv/bin/activate
-                pip install gdown
+                pip install gdown pylint pytest
                 '''
             }
         }
@@ -27,24 +27,35 @@ pipeline {
         }
         stage('Static Analysis') {
             steps {
-                echo 'Running static analysis...'
-                // Static analysis steps
+                sh '''
+                . venv/bin/activate
+                pylint ai_analysis.py > static_analysis_results.txt
+                '''
+                archiveArtifacts artifacts: 'static_analysis_results.txt'
             }
         }
         stage('Dynamic Analysis') {
             steps {
-                echo 'Running dynamic analysis...'
-                // Dynamic analysis steps
+                sh '''
+                . venv/bin/activate
+                pytest > dynamic_analysis_results.txt
+                '''
+                archiveArtifacts artifacts: 'dynamic_analysis_results.txt'
             }
         }
         stage('AI Analysis') {
             steps {
-                echo 'Running AI analysis...'
                 sh '''
                 . venv/bin/activate
-                python3 ai_analysis.py
+                python3 ai_analysis.py > ai_analysis_results.txt
                 '''
+                archiveArtifacts artifacts: 'ai_analysis_results.txt'
             }
+        }
+    }
+    post {
+        always {
+            cleanWs()
         }
     }
 }
