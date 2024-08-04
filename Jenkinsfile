@@ -3,7 +3,7 @@ pipeline {
     environment {
         SONARQUBE_SCANNER_HOME = tool name: 'SonarQubeScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
         SONAR_PROJECT_KEY = 'CWE-79'  // SonarQube에서 확인한 프로젝트 키를 입력
-        SONAR_PROJECT_NAME = 'CWE-79'  // SonarQube에서 확인한 프로젝트 이름을 입력
+        SONAR_PROJECT_NAME = 'KORColi'  // SonarQube에서 확인한 프로젝트 이름을 입력
         SONARQUBE_HOST_URL = 'http://localhost:9000'
         SONARQUBE_TOKEN = 'sqp_82a6743c4bfe5853c53e57bf15fb386086cd3eda'
     }
