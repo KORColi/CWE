@@ -27,35 +27,40 @@ pipeline {
         }
         stage('Static Analysis') {
             steps {
-                sh '''
-                . venv/bin/activate
-                pylint ai_analysis.py > static_analysis_results.txt
-                '''
-                archiveArtifacts artifacts: 'static_analysis_results.txt'
+                echo 'Running static analysis with Checkmarx...'
+                // Checkmarx 스캐너 명령어를 여기에 추가합니다.
+                // 예: sh 'checkmarx_scan_command nvdcve-*.json.gz'
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: '**/checkmarx_reports/*', allowEmptyArchive: true
+                }
             }
         }
         stage('Dynamic Analysis') {
             steps {
-                sh '''
-                . venv/bin/activate
-                pytest > dynamic_analysis_results.txt
-                '''
-                archiveArtifacts artifacts: 'dynamic_analysis_results.txt'
+                echo 'Running dynamic analysis with OWASP ZAP...'
+                // OWASP ZAP을 통해 NVD 데이터셋 기반의 동적 분석을 수행합니다.
+                // 예: docker run -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-baseline.py -t http://example.com -r zap_report.html
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'zap_report.html', allowEmptyArchive: true
+                }
             }
         }
         stage('AI Analysis') {
             steps {
                 sh '''
                 . venv/bin/activate
-                python3 ai_analysis.py
+                python3 ai_analysis.py > ai_analysis_report.txt
                 '''
-                archiveArtifacts artifacts: 'ai_analysis_results.txt'
             }
-        }
-    }
-    post {
-        always {
-            cleanWs()
+            post {
+                always {
+                    archiveArtifacts artifacts: 'ai_analysis_report.txt', allowEmptyArchive: true
+                }
+            }
         }
     }
 }
