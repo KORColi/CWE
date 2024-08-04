@@ -1,5 +1,12 @@
 pipeline {
     agent any
+    environment {
+        SONARQUBE_SCANNER_HOME = tool 'SonarQubeScanner'
+        SONAR_PROJECT_KEY = 'CWE-79'  // 여기에 확인한 프로젝트 키를 입력
+        SONAR_PROJECT_NAME = 'CWE-79'  // 프로젝트 이름
+        SONARQUBE_HOST_URL = 'http://localhost:9000'
+        SONARQUBE_TOKEN = 'sqp_82a6743c4bfe5853c53e57bf15fb386086cd3eda'
+    }
     stages {
         stage('Setup Python Environment') {
             steps {
@@ -27,21 +34,27 @@ pipeline {
         }
         stage('Static Analysis') {
             steps {
-                echo 'Running static analysis with Checkmarx...'
-                // Checkmarx 스캐너 명령어를 여기에 추가합니다.
-                // 예: sh 'checkmarx_scan_command nvdcve-*.json.gz'
+                echo 'Running static analysis with SonarQube...'
+                sh '''
+                $SONARQUBE_SCANNER_HOME/bin/sonar-scanner \
+                  -Dsonar.projectKey=$SONAR_PROJECT_KEY \
+                  -Dsonar.sources=. \
+                  -Dsonar.host.url=$SONARQUBE_HOST_URL \
+                  -Dsonar.login=$SONARQUBE_TOKEN
+                '''
             }
             post {
                 always {
-                    archiveArtifacts artifacts: '**/checkmarx_reports/*', allowEmptyArchive: true
+                    archiveArtifacts artifacts: '**/sonarqube-reports/*', allowEmptyArchive: true
                 }
             }
         }
         stage('Dynamic Analysis') {
             steps {
                 echo 'Running dynamic analysis with OWASP ZAP...'
-                // OWASP ZAP을 통해 NVD 데이터셋 기반의 동적 분석을 수행합니다.
-                // 예: docker run -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-baseline.py -t http://example.com -r zap_report.html
+                sh '''
+                docker run -v $(pwd):/zap/wrk/:rw -t owasp/zap2docker-stable zap-baseline.py -t http://example.com -r zap_report.html
+                '''
             }
             post {
                 always {
