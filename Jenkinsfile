@@ -2,8 +2,8 @@ pipeline {
     agent any
     environment {
         SONARQUBE_SCANNER_HOME = tool 'SonarQubeScanner'
-        SONAR_PROJECT_KEY = 'CWE-79'  // SonarQube에서 확인한 프로젝트 키
-        SONAR_PROJECT_NAME = 'CWE-79'  // 프로젝트 이름
+        SONAR_PROJECT_KEY = 'CWE-79'  // 프로젝트 키 설정
+        SONAR_PROJECT_NAME = 'CWE-79'  // 프로젝트 이름 설정
         SONARQUBE_HOST_URL = 'http://localhost:9000'
         SONARQUBE_TOKEN = 'sqp_82a6743c4bfe5853c53e57bf15fb386086cd3eda'
     }
