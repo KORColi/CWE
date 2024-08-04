@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        SONARQUBE_SCANNER_HOME = tool name: 'SonarQubeScanner'
+        SONARQUBE_SCANNER_HOME = '/path/to/sonar-scanner'  // 직접 경로 설정
         SONAR_PROJECT_KEY = 'CWE-79'
         SONAR_PROJECT_NAME = 'CWE-79'
         SONARQUBE_HOST_URL = 'http://localhost:9000'
