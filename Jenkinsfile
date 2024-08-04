@@ -2,10 +2,9 @@ pipeline {
     agent any
     environment {
         SONARQUBE_SCANNER_HOME = tool name: 'SonarQubeScanner', type: 'hudson.plugins.sonar.SonarRunnerInstallation'
-        SONAR_PROJECT_KEY = 'CWE-79'  // SonarQube에서 확인한 프로젝트 키를 입력
-        SONAR_PROJECT_NAME = 'KORColi'  // SonarQube에서 확인한 프로젝트 이름을 입력
+        SONAR_PROJECT_KEY = 'CWE-79'  // SonarQube에서 확인한 프로젝트 키
+        SONAR_PROJECT_NAME = 'CWE-79'  // SonarQube 대시보드에 표시된 프로젝트 이름
         SONARQUBE_HOST_URL = 'http://localhost:9000'
-        SONARQUBE_TOKEN = 'sqp_82a6743c4bfe5853c53e57bf15fb386086cd3eda'
     }
     stages {
         stage('Setup Python Environment') {
@@ -35,13 +34,14 @@ pipeline {
         stage('Static Analysis') {
             steps {
                 echo 'Running static analysis with SonarQube...'
-                sh '''
-                $SONARQUBE_SCANNER_HOME/bin/sonar-scanner \
-                  -Dsonar.projectKey=$SONAR_PROJECT_KEY \
-                  -Dsonar.sources=. \
-                  -Dsonar.host.url=$SONARQUBE_HOST_URL \
-                  -Dsonar.login=$SONARQUBE_TOKEN
-                '''
+                withSonarQubeEnv('SonarQube') {
+                    sh '''
+                    $SONARQUBE_SCANNER_HOME/bin/sonar-scanner \
+                      -Dsonar.projectKey=$SONAR_PROJECT_KEY \
+                      -Dsonar.sources=. \
+                      -Dsonar.host.url=$SONARQUBE_HOST_URL
+                    '''
+                }
             }
             post {
                 always {
