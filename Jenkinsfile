@@ -5,6 +5,7 @@ pipeline {
         SONAR_PROJECT_KEY = 'CWE-79'  // SonarQube에서 확인한 프로젝트 키
         SONAR_PROJECT_NAME = 'CWE-79'  // SonarQube 대시보드에 표시된 프로젝트 이름
         SONARQUBE_HOST_URL = 'http://localhost:9000'
+        SONARQUBE_TOKEN = 'sqp_2e913fe51ce3c9be42a7048b3bce61c9cc429f82'  // 새로 발급받은 토큰
     }
     stages {
         stage('Setup Python Environment') {
@@ -34,14 +35,13 @@ pipeline {
         stage('Static Analysis') {
             steps {
                 echo 'Running static analysis with SonarQube...'
-                withSonarQubeEnv('SonarQube') {
-                    sh '''
-                    $SONARQUBE_SCANNER_HOME/bin/sonar-scanner \
-                      -Dsonar.projectKey=$SONAR_PROJECT_KEY \
-                      -Dsonar.sources=. \
-                      -Dsonar.host.url=$SONARQUBE_HOST_URL
-                    '''
-                }
+                sh '''
+                $SONARQUBE_SCANNER_HOME/bin/sonar-scanner \
+                  -Dsonar.projectKey=$SONAR_PROJECT_KEY \
+                  -Dsonar.sources=. \
+                  -Dsonar.host.url=$SONARQUBE_HOST_URL \
+                  -Dsonar.login=$SONARQUBE_TOKEN
+                '''
             }
             post {
                 always {
