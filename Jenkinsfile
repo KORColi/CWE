@@ -1,13 +1,18 @@
 pipeline {
     agent any
     environment {
-        SONARQUBE_SCANNER_HOME = '/path/to/sonar-scanner'  // 직접 경로 설정
+        SONARQUBE_SCANNER_HOME = '/opt/sonar-scanner/latest'  // 직접 경로 설정
         SONAR_PROJECT_KEY = 'CWE-79'
         SONAR_PROJECT_NAME = 'CWE-79'
         SONARQUBE_HOST_URL = 'http://localhost:9000'
         SONARQUBE_TOKEN = 'sqp_2e913fe51ce3c9be42a7048b3bce61c9cc429f82'
     }
     stages {
+        stage('SCM') {
+            steps {
+                checkout scm
+            }
+        }
         stage('Setup Python Environment') {
             steps {
                 sh '''
@@ -74,6 +79,11 @@ pipeline {
                     archiveArtifacts artifacts: 'ai_analysis_report.txt', allowEmptyArchive: true
                 }
             }
+        }
+    }
+    post {
+        always {
+            archiveArtifacts artifacts: '**/nvdcve-*.json.gz', allowEmptyArchive: true
         }
     }
 }
