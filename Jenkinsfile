@@ -1,9 +1,10 @@
 pipeline {
     agent any
     environment {
-        CHECKMARX_SERVER = 'https://your-checkmarx-server-url.com'  // Checkmarx 서버 URL
-        CHECKMARX_PROJECT = 'CWE-79-XSS-Detection'  // Checkmarx 프로젝트 이름
-        CHECKMARX_CREDENTIALS = 'checkmarx_credentials'  // Jenkins에 저장된 Checkmarx 인증 정보 ID
+        SONARQUBE_SCANNER_HOME = '/opt/sonar-scanner/latest'  // SonarScanner 설치 경로
+        SONAR_PROJECT_KEY = 'CWE-79-XSS-Detection'  // SonarQube 프로젝트 키
+        SONARQUBE_HOST_URL = 'http://localhost:9000'  // SonarQube 서버 URL
+        SONARQUBE_TOKEN = 'your_sonar_token'  // SonarQube에서 생성된 토큰
         ZAP_DOCKER_IMAGE = 'owasp/zap2docker-stable'  // ZAP Docker 이미지
         ZAP_TARGET_URL = 'http://your-application-url.com'  // 동적 분석할 웹 애플리케이션 URL
         ZAP_REPORT = 'zap_report.html'  // OWASP ZAP 결과 파일
@@ -16,16 +17,20 @@ pipeline {
             }
         }
         
-        stage('Checkmarx Static Analysis') {
+        stage('SonarQube Static Analysis') {
             steps {
-                echo 'Running static analysis with Checkmarx...'
-                checkmarxScan credentialsId: "${CHECKMARX_CREDENTIALS}", 
-                               projectName: "${CHECKMARX_PROJECT}", 
-                               serverUrl: "${CHECKMARX_SERVER}"
+                echo 'Running static analysis with SonarQube...'
+                sh '''
+                ${SONARQUBE_SCANNER_HOME}/bin/sonar-scanner \
+                  -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                  -Dsonar.sources=. \
+                  -Dsonar.host.url=${SONARQUBE_HOST_URL} \
+                  -Dsonar.login=${SONARQUBE_TOKEN}
+                '''
             }
             post {
                 always {
-                    archiveArtifacts artifacts: '**/checkmarx-reports/*', allowEmptyArchive: true
+                    archiveArtifacts artifacts: '**/sonarqube-reports/*', allowEmptyArchive: true
                 }
             }
         }
@@ -47,26 +52,11 @@ pipeline {
                 }
             }
         }
-        
-        stage('AI Analysis') {
-            steps {
-                // AI 분석 코드 (선택 사항, 여기에 AI 분석 작업을 추가)
-                sh '''
-                . venv/bin/activate
-                python3 ai_analysis.py > ai_analysis_report.txt
-                '''
-            }
-            post {
-                always {
-                    archiveArtifacts artifacts: 'ai_analysis_report.txt', allowEmptyArchive: true
-                }
-            }
-        }
     }
     
     post {
         always {
-            archiveArtifacts artifacts: '**/ai_analysis_report.txt', allowEmptyArchive: true
+            archiveArtifacts artifacts: '**/zap_report.html', allowEmptyArchive: true
         }
     }
 }
