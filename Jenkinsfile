@@ -5,7 +5,7 @@ pipeline {
         SONAR_PROJECT_KEY = 'CWE-79'  // SonarQube 프로젝트 키
         SONAR_PROJECT_NAME = 'CWE-79'  // SonarQube 프로젝트 이름
         SONARQUBE_HOST_URL = 'http://localhost:9000'  // SonarQube 서버 URL
-        SONARQUBE_TOKEN = 'sqa_32bedcecbd772605f34aba9f20565ae4f9dc762b'  // SonarQube 인증 토큰
+        SONARQUBE_TOKEN = 'squ_7dbbba69ba6c89fc6e43ee78926153a559d2df3c'  // SonarQube 인증 토큰
         ZAP_DOCKER_IMAGE = 'owasp/zap2docker-stable'  // OWASP ZAP Docker 이미지
         ZAP_TARGET_URL = 'http://your-application-url.com'  // OWASP ZAP으로 테스트할 타겟 URL
         ZAP_REPORT = 'zap_report.html'  // OWASP ZAP 결과 파일
