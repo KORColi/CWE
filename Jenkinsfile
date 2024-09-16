@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        SONAR_SCANNER_HOME = '/opt/sonar-scanner/latest/bin/sonar-scanner'  // SonarQube 스캐너 경로
+        SONAR_SCANNER_HOME = '/opt/sonar-scanner/latest'  // SonarQube 스캐너 경로 (정확한 경로)
         SONAR_PROJECT_KEY = 'CWE-79'  // SonarQube 프로젝트 키
         SONAR_PROJECT_NAME = 'CWE-79'  // SonarQube 프로젝트 이름
         SONARQUBE_HOST_URL = 'http://localhost:9000'  // SonarQube 서버 URL
