@@ -20,7 +20,6 @@ pipeline {
             steps {
                 echo 'Running static analysis with SonarQube...'
                 sh '''
-                    chmod +x ${SONAR_SCANNER_HOME}/bin/sonar-scanner
                     ${SONAR_SCANNER_HOME}/bin/sonar-scanner \
                     -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
                     -Dsonar.sources=. \
